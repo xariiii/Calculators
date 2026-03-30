@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { evaluate } from "mathjs";
 
 function App() {
   const buttons = [
     {label: "%", value:"%"}, {label: "CE", value:"CE"}, {label: "C", value:"C"}, {label: "DEL", value:"DEL"},
-    {label: "1/x", value:"1/x"}, {label: "x²", value:"x²"}, {label: "√x", value:"√x"}, {label: "/", value:"/"},
+    {label: "1/x", value:"1 / x"}, {label: "x²", value:"x ^ 2"}, {label: "√x", value:"sqrt(x)"}, {label: "/", value:"/"},
     {label: "7", value:"7"}, {label: "8", value:"8"}, {label: "9", value:"9"}, {label: "x", value:"x"},
     {label: "4", value:"4"}, {label: "5", value:"5"}, {label: "6", value:"6"}, {label: "-", value:"-"},
     {label: "1", value:"1"}, {label: "2", value:"2"}, {label: "3", value:"3"}, {label: "+", value:"+"},
@@ -15,7 +16,9 @@ function App() {
   console.log("Kliknięto:", value)
 }
   
-  const value = ""
+  const value = "";
+  const expression = "";
+  const result = evaluate(expression);
 
   return (
     <div className="h-screen w-screen bg-[url('/src/assets/background.jpg')] bg-cover bg-center">
