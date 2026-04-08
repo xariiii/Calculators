@@ -26,8 +26,15 @@ for label in numbers:
         digit_map[label] = label
 
 def on_button_click(label):
-    value = digit_map[label]
-    entry.insert(tk.END, value)
+    if label == "=":
+        calculate()
+    elif label == "C":
+        entry.delete(0, tk.END)
+    elif label == "CE":
+        entry.delete(len(entry.get())-1, tk.END)
+    else:
+        value = digit_map[label]
+        entry.insert(tk.END, value)
 
 entry = tk.Entry(root)
 entry.grid(row=0, column=0, columnspan=4, pady=10)
@@ -40,5 +47,13 @@ for i, label in enumerate(numbers):
     button = tk.Button(root, text=label, width=10, height=5, command=lambda l=label: on_button_click(l))
     button.grid(row=row + 1, column=col )
 
+def calculate():
+    try:
+        result = eval(entry.get())
+        entry.delete(0, tk.END)
+        entry.insert(0, result)
+    except:
+        entry.delete(0, tk.END)
+        entry.insert(0, "error")
 
 root.mainloop()
