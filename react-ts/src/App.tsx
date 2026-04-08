@@ -114,14 +114,14 @@ function App() {
             <Input
               value={equation}
               readOnly
-              className="text-right text-3xl"
+              className="text-right text-xl"
             />
             <div className="grid grid-cols-4 gap-2">
               {buttons.map((btn, index) => (
                 <Button
                   key={index}
                   onClick={() => handleClick(btn.value)}
-                  className="bg-gray-700 text-white p-14 m-2 rounded-3xl"
+                  className="bg-gray-700 text-white text-xl p-14 m-2 rounded-3xl"
                 >
                   {btn.label}
                 </Button>
