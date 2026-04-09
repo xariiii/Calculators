@@ -11,11 +11,12 @@ root.configure(bg="cadetblue2")
 # Lists
 colors = ["cadetblue", "cadetblue1", "cadetblue2", "cadetblue3", "cadetblue4"]
 numbers = [
-    "1", "2", "3", "4", "5"," 6", "7", "8", "9", "0",
-    "C", "CE", "%", "//",
-    "(", ")", "^", "/",
-    "*", "-", "+",".", 
-    "=", "x"
+    "%", "//", "CE", "C",
+    "1/x", "x^2", "sqrt", "/",
+    "7", "8", "9", "*", 
+    "4", "5", "6", "-", 
+    "1", "2", "3", "+", 
+    "+/-", "0", ",", "="
 ]
 
 values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -32,6 +33,16 @@ def on_button_click(label):
         entry.delete(0, tk.END)
     elif label == "CE":
         entry.delete(len(entry.get())-1, tk.END)
+    elif label == "%":
+        entry.insert(tk.END, "%")
+        # i have to fix it xd
+        expression = entry.get()
+        
+        last_number = expression[::-1]
+        value = float(last_number)
+        procent = value / 100
+        result = value + procent
+        entry.insert(tk.END, result)
     else:
         value = digit_map[label]
         entry.insert(tk.END, value)
