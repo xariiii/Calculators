@@ -1,70 +1,130 @@
 import tkinter as tk
+import math
 
 # Setup
 root = tk.Tk()
-root.geometry("400x600")
 root.title("Calculator")
+root.resizable(False, False)
+root.iconbitmap("python/calculator.ico")
 
-# Colors
-root.configure(bg="cadetblue2")
 
-# Lists
-colors = ["cadetblue", "cadetblue1", "cadetblue2", "cadetblue3", "cadetblue4"]
-numbers = [
-    "%", "//", "CE", "C",
-    "1/x", "x^2", "sqrt", "/",
-    "7", "8", "9", "*", 
-    "4", "5", "6", "-", 
-    "1", "2", "3", "+", 
-    "+/-", "0", ",", "="
+# button values
+
+button_values = [
+    ["C", "+/-", "%", "÷"],
+    ["7", "8", "9", "×"],
+    ["4", "5", "6", "-"],
+    ["1", "2", "3", "+"],
+    ["0", ".", "√", "="]
 ]
 
-values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-digit_map = {str(v): str(v) for v in values}
+# color pallete
 
-for label in numbers:
-    if label not in digit_map:
-        digit_map[label] = label
+label_color = "#394158"
+button_color = "#273469"
+text_color = "#fafaff"
+top_color = "#7A65B0"
+right_color = "#1e2749"
 
-def on_button_click(label):
-    if label == "=":
-        calculate()
-    elif label == "C":
-        entry.delete(0, tk.END)
-    elif label == "CE":
-        entry.delete(len(entry.get())-1, tk.END)
-    elif label == "%":
-        entry.insert(tk.END, "%")
-        # i have to fix it xd
-        expression = entry.get()
+# lists of symbols
+
+right_symbols = ["÷", "×", "-", "+", "="]
+top_symbols = ["C", "+/-", "%"]
+
+# amount of rows and columns 
+
+row_count = len(button_values)
+column_count = len(button_values[0])
+
+# layout
+
+frame = tk.Frame(root)
+label = tk.Label(frame, text="0", font=("Arial", 45), background=label_color, foreground=text_color, anchor="e", width=column_count)
+
+label.grid(row=0, column=0, columnspan=column_count, sticky="we")
+
+for row in range(row_count):
+    for column in range(column_count):
+        value = button_values[row][column]
+        button = tk.Button(frame, text=value, font=("Arial", 30),
+                           width=column_count-1, height=1, 
+                           command=lambda value=value: button_clicked(value))
         
-        last_number = expression[::-1]
-        value = float(last_number)
-        procent = value / 100
-        result = value + procent
-        entry.insert(tk.END, result)
+        if value in top_symbols:
+            button.config(foreground=text_color, background=top_color)
+        elif value in right_symbols:
+            button.config(foreground=text_color, background=right_color)
+        else:
+            button.config(foreground=text_color, background=button_color)
+        button.grid(row=row+1, column=column)
+
+frame.pack()
+
+# functions
+
+def remove_zero_decimal(num):
+    if num % 1 == 0:
+        num = int(num)
+    return str(num)
+
+def button_clicked(value):
+    global label
+
+    text = label["text"]
+
+    if value == "=":
+        expr = text.replace("×", "*").replace("÷", "/")
+        try:
+            result = eval(expr)
+            label["text"] = remove_zero_decimal(result)
+        except:
+            label["text"] = "Error"
+        return
+
+    if value == "C":
+        label["text"] = "0"
+        return
+
+    if value == "+/-":
+        try:
+            num = float(text)
+            label["text"] = remove_zero_decimal(-num)
+        except:
+            pass
+        return
+
+    if value == "%":
+        try:
+            num = float(text)
+            label["text"] = remove_zero_decimal(num / 100)
+        except:
+            pass
+        return
+
+    if value == "√":
+        try:
+            num = float(text)
+            label["text"] = remove_zero_decimal(math.sqrt(num))
+        except:
+            label["text"] = "Error"
+        return
+
+    if text == "0":
+        label["text"] = value
     else:
-        value = digit_map[label]
-        entry.insert(tk.END, value)
+        label["text"] += value
 
-entry = tk.Entry(root)
-entry.grid(row=0, column=0, columnspan=4, pady=10)
+# centering the window on a screen
 
-max_col = 4
+root.update()
+root_width = root.winfo_width()
+root_height = root.winfo_height()
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
 
-for i, label in enumerate(numbers):
-    row = i // max_col
-    col = i % max_col
-    button = tk.Button(root, text=label, width=10, height=5, command=lambda l=label: on_button_click(l))
-    button.grid(row=row + 1, column=col )
+window_x = int((screen_width/2) - (root_width/2))
+window_y = int((screen_height/2) - (root_height/2))
 
-def calculate():
-    try:
-        result = eval(entry.get())
-        entry.delete(0, tk.END)
-        entry.insert(0, result)
-    except:
-        entry.delete(0, tk.END)
-        entry.insert(0, "error")
+root.geometry(f"{root_width}x{root_height}+{window_x}+{window_y}")
 
 root.mainloop()
