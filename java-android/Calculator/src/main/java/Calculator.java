@@ -21,6 +21,8 @@ public class Calculator {
     static boolean startNew = true;
     static JTextArea historyArea;
 
+    static CalculatorLogic logic = new CalculatorLogic();
+
     static List<CalcButton> buttons = List.of(
             new CalcButton("%", "%"),
             new CalcButton("CE", "CE"),
