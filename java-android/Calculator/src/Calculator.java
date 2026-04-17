@@ -15,6 +15,8 @@ public class Calculator {
         }
     }
 
+    static JTextField inputField;
+
     // Static list so main() can access it
     static List<CalcButton> buttons = List.of(
             new CalcButton("%", "%"),
@@ -45,12 +47,20 @@ public class Calculator {
 
     public static void main(String[] args) {
 
+
+
         JFrame frame = new JFrame("Calculator");
         frame.setSize(400, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(6, 4)); // 6 rows, 4 columns
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(1,1));
+        inputField = new JTextField(14);
+        inputPanel.add(inputField);
+
+
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new GridLayout(6, 4)); // 6 rows, 4 columns
 
         // Create buttons dynamically
         for (CalcButton b : buttons) {
@@ -62,10 +72,10 @@ public class Calculator {
                 System.out.println("Pressed: " + val);
             });
 
-            panel.add(btn);
+            buttonsPanel.add(btn);
         }
-
-        frame.add(panel);
+        frame.add(inputPanel);
+        frame.add(buttonsPanel);
         frame.setVisible(true);
     }
 }
