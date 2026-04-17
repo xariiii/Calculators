@@ -19,6 +19,7 @@ public class Calculator {
     static double num1 = 0;
     static String operator = "";
     static boolean startNew = true;
+    static JTextArea historyArea;
 
     static List<CalcButton> buttons = List.of(
             new CalcButton("%", "%"),
@@ -50,8 +51,19 @@ public class Calculator {
     public static void main(String[] args) {
 
         JFrame frame = new JFrame("Calculator");
-        frame.setSize(400, 600);
+        frame.setSize(600, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        historyArea = new JTextArea();
+        historyArea.setEditable(false);
+        historyArea.setBackground(new Color(25, 25, 25));
+        historyArea.setForeground(Color.WHITE);
+        historyArea.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        JScrollPane historyScroll = new JScrollPane(historyArea);
+        historyScroll.setPreferredSize(new Dimension(150, 0));
+        historyScroll.setBorder(BorderFactory.createTitledBorder("History"));
+
 
         inputField = new JTextField();
         inputField.setFont(new Font("Arial", Font.BOLD, 32));
@@ -87,7 +99,7 @@ public class Calculator {
             btn.setForeground(btnFg);
             btn.setFocusPainted(false);
             btn.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 80)));
-            
+
             if ("+-*/".contains(b.value)) {
                 btn.setBackground(accent);
                 btn.setForeground(Color.WHITE);
@@ -99,6 +111,7 @@ public class Calculator {
 
 
         frame.setLayout(new BorderLayout());
+        frame.add(historyScroll, BorderLayout.EAST);
         frame.add(inputPanel, BorderLayout.NORTH);
         frame.add(buttonsPanel, BorderLayout.CENTER);
 
@@ -195,6 +208,8 @@ public class Calculator {
                 case "/" -> num1 / num2;
                 default -> num2;
             };
+            String expression = num1 + " " + operator + " " + num2 + " = " + result;
+            historyArea.append(expression + "\n");
             inputField.setText(String.valueOf(result));
             startNew = true;
         }
