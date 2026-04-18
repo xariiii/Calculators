@@ -11,11 +11,12 @@ root.iconbitmap("python/calculator.ico")
 # button values
 
 button_values = [
-    ["C", "+/-", "%", "÷"],
+    ["%", "CE", "C", "<x"],
+    ["1/x", "²", "√", "÷"],
     ["7", "8", "9", "×"],
     ["4", "5", "6", "-"],
     ["1", "2", "3", "+"],
-    ["0", ".", "√", "="]
+    ["+/-", "0", ".","="]
 ]
 
 # color pallete
@@ -29,7 +30,7 @@ right_color = "#1e2749"
 # lists of symbols
 
 right_symbols = ["÷", "×", "-", "+", "="]
-top_symbols = ["C", "+/-", "%"]
+top_symbols = ["%", "CE", "C", "<x"]
 
 # amount of rows and columns 
 
@@ -71,6 +72,10 @@ def button_clicked(value):
     global label
 
     text = label["text"]
+    if text == "Error":
+        if value not in ["C", "CE"]:
+            label["text"] = "0"
+            text = "0"
 
     if value == "=":
         expr = text.replace("×", "*").replace("÷", "/")
@@ -108,6 +113,37 @@ def button_clicked(value):
         except:
             label["text"] = "Error"
         return
+    
+    if value == "1/x":
+        try:
+            num = float(text)
+            if num == "0":
+                label["text"] = "Error"
+            else:
+                label["text"] = remove_zero_decimal(1 / num)
+        except:
+            label["text"] = "Error"
+        return
+    
+    if value == "²":
+        try:
+            num = float(text)
+            label["text"] = remove_zero_decimal(num * num)
+        except:
+            label["text"] = "Error"
+        return
+    
+    if value == "CE":
+        label["text"] == "0"
+        return
+    
+    if value == "<x":
+        if len(text) > 1:
+            label["text"] = text[:-1]
+        else: 
+            label["text"] = "0"
+        return
+
 
     if text == "0":
         label["text"] = value
