@@ -22,14 +22,24 @@ python calculator.py
 ```
 
 ## ✨ Obsługiwane funkcje
+
+### Funkcje podstawowe
 * Dodawanie
 * Odejmowanie 
 * Mnożenie
 * Dzielenie
+
+### Funkcje dodatkowe
+* Procenty
+* Częściowe czyszczenie
+* Pełne czyszczenie
+* Usuwanie ostatniego znaku
+* Odwrotność liczby
+* Podnoszenie do kwadratu
 * Pierwiastek kwadratowy
-* Obliczanuie procent
-* Zmiana znaku liczby
-* Czyszczenie ekranu
+* Zmiana znaku
+* Wpisywanie cyfr
+* Obliczanie wyniku
 * Obsługa błędów
 
 ## 📄 Opis dzialania programu
