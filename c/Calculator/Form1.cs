@@ -1,67 +1,90 @@
 using System;
-using System.Text;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
+
 namespace Calculator
 {
-    public partial class Calculator : Form
+    public partial class Form1 : Form
     {
-        //Fields
-        Double result = 0;
+        double result = 0;
         string operation = string.Empty;
-        string fstNum, secNum;
         bool enterValue = false;
-        public Calculator()
+
+        public Form1()
         {
             InitializeComponent();
         }
 
-
-
         private void btnNum_Click(object sender, EventArgs e)
         {
-            if (ResultBox.Text == "0" || enterValue) ResultBox.Text = string.Empty;
+            if (ResultBox.Text == "0" || enterValue)
+                ResultBox.Text = string.Empty;
 
             enterValue = false;
             Button button = (Button)sender;
+
             if (button.Text == ".")
             {
                 if (!ResultBox.Text.Contains("."))
-                    ResultBox.Text = ResultBox.Text + button.Text;
+                    ResultBox.Text += ".";
             }
-            else ResultBox.Text = ResultBox.Text + button.Text;
+            else
+            {
+                ResultBox.Text += button.Text;
+            }
         }
 
         private void BtnMathOperation_Click(object sender, EventArgs e)
         {
-            if (result != 0) BtnEquals.PerformClick();
-            else result = Double.Parse(ResultBox.Text);
+            if (result != 0)
+                BtnEquals.PerformClick();
+            else
+                result = double.Parse(ResultBox.Text);
 
             Button button = (Button)sender;
             operation = button.Text;
             enterValue = true;
 
-            if (ResultBox.Text != "0")
-            {
-                ResultBox2.Text = fstNum + $"{result}{operation}";
-                ResultBox.Text = string.Empty;
-
-            }
-
+            ResultBox.Text = string.Empty;
         }
 
         private void BtnEquals_Click(object sender, EventArgs e)
         {
-            secNum = ResultBox.Text;
-            ResultBox2.Text = $"{ResultBox2.Text} {ResultBox.Text} =";
+            if (ResultBox.Text == string.Empty)
+                return;
 
-            if(ResultBox.Text != string.Empty)
+            double secondValue = double.Parse(ResultBox.Text);
+
+            switch (operation)
             {
-                if (ResultBox.Text == "0") ResultBox2.Text = string.Empty;
-
+                case "+":
+                    ResultBox.Text = (result + secondValue).ToString();
+                    break;
+                case "-":
+                    ResultBox.Text = (result - secondValue).ToString();
+                    break;
+                case "×":
+                    ResultBox.Text = (result * secondValue).ToString();
+                    break;
+                case "÷":
+                    if (secondValue == 0)
+                    {
+                        MessageBox.Show("Cannot divide by zero");
+                        return;
+                    }
+                    ResultBox.Text = (result / secondValue).ToString();
+                    break;
             }
+
+            result = double.Parse(ResultBox.Text);
+            operation = string.Empty;
+        }
+
+        private void BtnClear_Click(object sender, EventArgs e)
+        {
+            ResultBox.Text = "0";
+            result = 0;
+            operation = string.Empty;
+            enterValue = false;
         }
     }
 }

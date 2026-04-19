@@ -1,0 +1,17 @@
+D:\Calculators\xxx\Calculator\bin\Debug\net8.0-windows\Calculator.exe
+D:\Calculators\xxx\Calculator\bin\Debug\net8.0-windows\Calculator.deps.json
+D:\Calculators\xxx\Calculator\bin\Debug\net8.0-windows\Calculator.runtimeconfig.json
+D:\Calculators\xxx\Calculator\bin\Debug\net8.0-windows\Calculator.dll
+D:\Calculators\xxx\Calculator\bin\Debug\net8.0-windows\Calculator.pdb
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.Form1.resources
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.csproj.GenerateResource.cache
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.GeneratedMSBuildEditorConfig.editorconfig
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.AssemblyInfoInputs.cache
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.AssemblyInfo.cs
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.csproj.CoreCompileInputs.cache
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.sourcelink.json
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.dll
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\refint\Calculator.dll
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.pdb
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\Calculator.genruntimeconfig.cache
+D:\Calculators\xxx\Calculator\obj\Debug\net8.0-windows\ref\Calculator.dll

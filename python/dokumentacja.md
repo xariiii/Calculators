@@ -56,3 +56,11 @@ python calculator.py
 |5*8|40|
 |√4|2|
 |20%|0.2|
+
+## ✅ Testy
+
+Aby uruchomić testy należy w terminalu wpisać komendę
+
+```
+python -m pytest
+```
