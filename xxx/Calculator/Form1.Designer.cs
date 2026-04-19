@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             PnlTitle = new Panel();
-            button1 = new Button();
             PnlHistory = new Panel();
             RtBoxDisplayHistory = new RichTextBox();
             BtnClearHistory = new Button();
@@ -62,32 +61,18 @@
             Btn0 = new Button();
             BtnDesimal = new Button();
             BtnEquals = new Button();
-            PnlTitle.SuspendLayout();
             PnlHistory.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // PnlTitle
             // 
-            PnlTitle.Controls.Add(button1);
             PnlTitle.Dock = DockStyle.Top;
             PnlTitle.Location = new Point(0, 0);
             PnlTitle.Margin = new Padding(0);
             PnlTitle.Name = "PnlTitle";
-            PnlTitle.Size = new Size(334, 40);
+            PnlTitle.Size = new Size(334, 12);
             PnlTitle.TabIndex = 0;
-            // 
-            // button1
-            // 
-            button1.BackColor = Color.FromArgb(82, 82, 152);
-            button1.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 238);
-            button1.ForeColor = Color.FromArgb(242, 242, 247);
-            button1.Location = new Point(294, 0);
-            button1.Name = "button1";
-            button1.Size = new Size(40, 40);
-            button1.TabIndex = 0;
-            button1.Text = "✖";
-            button1.UseVisualStyleBackColor = false;
             // 
             // PnlHistory
             // 
@@ -128,7 +113,7 @@
             // 
             panel1.Controls.Add(BtnHistory);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new Point(0, 40);
+            panel1.Location = new Point(0, 12);
             panel1.Margin = new Padding(0);
             panel1.Name = "panel1";
             panel1.Size = new Size(334, 40);
@@ -155,7 +140,7 @@
             ResultBox2.Dock = DockStyle.Top;
             ResultBox2.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 238);
             ResultBox2.ForeColor = Color.FromArgb(82, 82, 152);
-            ResultBox2.Location = new Point(0, 80);
+            ResultBox2.Location = new Point(0, 52);
             ResultBox2.Margin = new Padding(0);
             ResultBox2.Multiline = true;
             ResultBox2.Name = "ResultBox2";
@@ -169,7 +154,7 @@
             ResultBox.Dock = DockStyle.Top;
             ResultBox.Font = new Font("Segoe UI", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 238);
             ResultBox.ForeColor = Color.FromArgb(82, 82, 152);
-            ResultBox.Location = new Point(0, 120);
+            ResultBox.Location = new Point(0, 92);
             ResultBox.Margin = new Padding(0);
             ResultBox.Multiline = true;
             ResultBox.Name = "ResultBox";
@@ -530,8 +515,7 @@
             Controls.Add(BtnBackSpace);
             Controls.Add(textBox1);
             Name = "Form1";
-            Text = "Form1";
-            PnlTitle.ResumeLayout(false);
+            Text = "Calculator";
             PnlHistory.ResumeLayout(false);
             panel1.ResumeLayout(false);
             ResumeLayout(false);
@@ -573,6 +557,5 @@
         private Button BtnEquals;
         private Button BtnClearHistory;
         private RichTextBox RtBoxDisplayHistory;
-        private Button button1;
     }
 }
