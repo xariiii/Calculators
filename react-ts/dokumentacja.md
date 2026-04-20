@@ -18,7 +18,7 @@ node -v
 
 ## ▶️ Uruchomienie
 
-Aby uruchomić kalkulator należy wpisać następujące komendy w terminalu
+### Aby uruchomić kalkulator należy wpisać następujące komendy w terminalu
 - Przejdz do folderu react-ts:
 
 ``` 
@@ -32,6 +32,23 @@ npm install
 ``` 
 npm run dev
 ```
+
+### Aby uruchomić test należy wpisać następujące komendy w terminalu
+
+- Przejdz do folderu react-ts:
+
+``` 
+cd react-ts
+```
+- Zainstaluj zależności:
+```
+npm install
+```
+- Uruchom test:
+``` 
+npm test
+```
+
 
 ## ✨ Obsługiwane funkcje
 

@@ -16,16 +16,23 @@ java -version
 
 ## ▶️ Uruchomienie
 
-Aby uruchomić kalkulator należy wpisać następujące komendy w terminalu
-- Kompilacja:
+### Aby uruchomić aplikację Java należy wykonać następujące kroki
 
-``` 
-javac Calculator.java
-```
-- Uruchomienie:
-```
-java Calculator
-```
+1. Otwórz projekt w IntelliJ IDEA (Plik -> Open… -> wybierz folder projektu)
+2. Upewnij się, że projekt ma poprawnie skonfigurowane SDK (File -> Project Structure -> Project -> Project SDK)
+3. Uruchom aplikację:
+   * Znajdź plik nazywający się Calculator.java (src -> main -> java -> Calculator.java)
+   * Kliknij zieloną strzałkę obok deklaracji main
+   * Wybierz Run
+
+### Aby uruchomić testy należy wykonać następujące kroki
+
+1. Otwórz projekt w IntelliJ IDEA (Plik -> Open… -> wybierz folder projektu)
+2. Upewnij się, że projekt ma poprawnie skonfigurowane SDK (File -> Project Structure -> Project -> Project SDK)
+3. Uruchom aplikację:
+   * Znajdź plik nazywający się CalculatorLogicTest.java (src -> test -> java -> CalculatorLogicTest.java)
+   * Kliknij zieloną strzałkę obok deklaracji main
+   * Wybierz Run
 
 ## ✨ Obsługiwane funkcje
 
