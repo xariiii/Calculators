@@ -176,6 +176,7 @@
             textBox1.Size = new Size(334, 666);
             textBox1.TabIndex = 5;
             textBox1.TextAlign = HorizontalAlignment.Right;
+            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // BtnBackSpace
             // 
@@ -186,7 +187,7 @@
             BtnBackSpace.Name = "BtnBackSpace";
             BtnBackSpace.Size = new Size(75, 75);
             BtnBackSpace.TabIndex = 10;
-            BtnBackSpace.Text = "<x";
+            BtnBackSpace.Text = "DEL";
             BtnBackSpace.UseVisualStyleBackColor = false;
             BtnBackSpace.Click += BtnBackSpace_Click;
             // 
@@ -258,13 +259,13 @@
             // BtnSqrt
             // 
             BtnSqrt.BackColor = Color.FromArgb(82, 82, 152);
-            BtnSqrt.Font = new Font("Segoe UI", 20.25F, FontStyle.Bold);
+            BtnSqrt.Font = new Font("Segoe UI", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 238);
             BtnSqrt.ForeColor = Color.FromArgb(242, 242, 247);
             BtnSqrt.Location = new Point(170, 253);
             BtnSqrt.Name = "BtnSqrt";
             BtnSqrt.Size = new Size(75, 75);
             BtnSqrt.TabIndex = 15;
-            BtnSqrt.Text = "√";
+            BtnSqrt.Text = "√x";
             BtnSqrt.UseVisualStyleBackColor = false;
             BtnSqrt.Click += BtnOperations_Click;
             // 

@@ -126,7 +126,7 @@ namespace Calculator
             operation = button.Text;
             switch (operation)
             {
-                case "√":
+                case "√x":
                     ResultBox2.Text = $"√({ResultBox.Text})";
                     ResultBox.Text = Convert.ToString(Math.Sqrt(Double.Parse(ResultBox.Text)));
                     break;
@@ -145,9 +145,14 @@ namespace Calculator
                 case "+/-":
                     ResultBox.Text = Convert.ToString(-1 * Convert.ToDouble(ResultBox.Text));
                     break;
-                
+
             }
             RtBoxDisplayHistory.AppendText($"{ResultBox2.Text}={ResultBox.Text}\n");
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
