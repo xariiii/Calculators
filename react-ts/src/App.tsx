@@ -121,7 +121,7 @@ function App() {
                 <Button
                   key={index}
                   onClick={() => handleClick(btn.value)}
-                  className="bg-gray-700 text-white text-xl p-14 m-2 rounded-3xl"
+                  className="bg-gray-700 text-white text-xl p-14 m-2 rounded-3xl hover:bg-gray-400"
                 >
                   {btn.label}
                 </Button>
