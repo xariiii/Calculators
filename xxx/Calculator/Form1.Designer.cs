@@ -186,7 +186,7 @@
             BtnBackSpace.Name = "BtnBackSpace";
             BtnBackSpace.Size = new Size(75, 75);
             BtnBackSpace.TabIndex = 10;
-            BtnBackSpace.Text = "<x";
+            BtnBackSpace.Text = "DEL";
             BtnBackSpace.UseVisualStyleBackColor = false;
             BtnBackSpace.Click += BtnBackSpace_Click;
             // 
@@ -264,7 +264,7 @@
             BtnSqrt.Name = "BtnSqrt";
             BtnSqrt.Size = new Size(75, 75);
             BtnSqrt.TabIndex = 15;
-            BtnSqrt.Text = "√";
+            BtnSqrt.Text = "√x";
             BtnSqrt.UseVisualStyleBackColor = false;
             BtnSqrt.Click += BtnOperations_Click;
             // 

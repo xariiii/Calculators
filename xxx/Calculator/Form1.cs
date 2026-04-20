@@ -126,7 +126,7 @@ namespace Calculator
             operation = button.Text;
             switch (operation)
             {
-                case "√":
+                case "√x":
                     ResultBox2.Text = $"√({ResultBox.Text})";
                     ResultBox.Text = Convert.ToString(Math.Sqrt(Double.Parse(ResultBox.Text)));
                     break;
