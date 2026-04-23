@@ -1,5 +1,6 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "itWDpPSqJFQ=",
   "success": true,
   "projectFilePath": "C:\\Users\\4dTp_1\\Documents\\GitHub\\Calculators\\xxx\\Calculator\\Calculator.csproj",
@@ -9,5 +10,11 @@
     "C:\\Users\\4dTp_1\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.21\\microsoft.aspnetcore.app.ref.8.0.21.nupkg.sha512",
     "C:\\Users\\4dTp_1\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.21\\microsoft.netcore.app.host.win-x64.8.0.21.nupkg.sha512"
   ],
+=======
+  "dgSpecHash": "geKiuFnr2Xs=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\4d\\Documents\\GitHub\\Calculators\\xxx\\Calculator\\Calculator.csproj",
+  "expectedPackageFiles": [],
+>>>>>>> e6fb9e0090bf6fb5850459ff80d7f837411151a6
   "logs": []
 }

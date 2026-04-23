@@ -1,18 +1,19 @@
 import tkinter as tk
+from tkinter import font
 import math
 
 # Setup
 root = tk.Tk()
 root.title("Calculator")
-root.resizable(False, False)
+root.geometry("350x705")
 root.iconbitmap("python/calculator.ico")
 
 
 # button values
 
 button_values = [
-    ["%", "CE", "C", "<x"],
-    ["1/x", "²", "√", "÷"],
+    ["%", "CE", "C", "DEL"],
+    ["1/x", "x²", "√x", "÷"],
     ["7", "8", "9", "×"],
     ["4", "5", "6", "-"],
     ["1", "2", "3", "+"],
@@ -21,16 +22,18 @@ button_values = [
 
 # color pallete
 
-label_color = "#394158"
-button_color = "#273469"
-text_color = "#fafaff"
-top_color = "#7A65B0"
-right_color = "#1e2749"
+white_color = "#f2f2f7"
+purple_color = "#525298"
+orange_color = "#f5955f"
 
+# font
+
+custom_font = font.Font(family="Segoe UI", size=20, weight="bold")
+custom_font_history = font.Font(family="Segoe UI", size=16, weight="bold")
 # lists of symbols
 
-right_symbols = ["÷", "×", "-", "+", "="]
-top_symbols = ["%", "CE", "C", "<x"]
+orange_btn = ["CE", "C", "DEL", "="]
+purple_btn = ["%", "1/x", "x²", "√x", "÷", "×", "-", "+", "+/-"]
 
 # amount of rows and columns 
 
@@ -40,24 +43,28 @@ column_count = len(button_values[0])
 # layout
 
 frame = tk.Frame(root)
-label = tk.Label(frame, text="0", font=("Arial", 45), background=label_color, foreground=text_color, anchor="e", width=column_count)
+HistoryLabel = tk.Label(frame, text="hist", font=custom_font_history, background=white_color, foreground=purple_color, anchor="e", width=column_count)
+ResultBox2 = tk.Label(frame, text="1", font=custom_font_history, background=white_color, foreground=purple_color, anchor="e", width=column_count)
+ResultBox = tk.Label(frame, text="0", font=custom_font, background=white_color, foreground=purple_color, anchor="e", width=column_count)
 
-label.grid(row=0, column=0, columnspan=column_count, sticky="we")
+HistoryLabel.grid(row=0, column=0, columnspan=column_count, sticky="we", pady=3)
+ResultBox2.grid(row=1, column=0, columnspan=column_count, sticky="we")
+ResultBox.grid(row=2, column=0, columnspan=column_count, sticky="we")
 
 for row in range(row_count):
     for column in range(column_count):
         value = button_values[row][column]
-        button = tk.Button(frame, text=value, font=("Arial", 30),
+        button = tk.Button(frame, text=value, font=custom_font,
                            width=column_count-1, height=1, 
                            command=lambda value=value: button_clicked(value))
         
-        if value in top_symbols:
-            button.config(foreground=text_color, background=top_color)
-        elif value in right_symbols:
-            button.config(foreground=text_color, background=right_color)
+        if value in orange_btn:
+            button.config(foreground=white_color, background=orange_color, width=2, height=2)
+        elif value in purple_btn:
+            button.config(foreground=white_color, background=purple_color, width=2, height=2)
         else:
-            button.config(foreground=text_color, background=button_color)
-        button.grid(row=row+1, column=column)
+            button.config(foreground=purple_color, background=white_color, width=2, height=2)
+        button.grid(row=row+3, column=column, padx=3, pady=3)
 
 frame.pack()
 
@@ -69,31 +76,31 @@ def remove_zero_decimal(num):
     return str(num)
 
 def button_clicked(value):
-    global label
+    global ResultBox
 
-    text = label["text"]
+    text = ResultBox["text"]
     if text == "Error":
         if value not in ["C", "CE"]:
-            label["text"] = "0"
+            ResultBox["text"] = "0"
             text = "0"
 
     if value == "=":
         expr = text.replace("×", "*").replace("÷", "/")
         try:
             result = eval(expr)
-            label["text"] = remove_zero_decimal(result)
+            ResultBox["text"] = remove_zero_decimal(result)
         except:
-            label["text"] = "Error"
+            ResultBox["text"] = "Error"
         return
 
     if value == "C":
-        label["text"] = "0"
+        ResultBox["text"] = "0"
         return
 
     if value == "+/-":
         try:
             num = float(text)
-            label["text"] = remove_zero_decimal(-num)
+            ResultBox["text"] = remove_zero_decimal(-num)
         except:
             pass
         return
@@ -101,54 +108,54 @@ def button_clicked(value):
     if value == "%":
         try:
             num = float(text)
-            label["text"] = remove_zero_decimal(num / 100)
+            ResultBox["text"] = remove_zero_decimal(num / 100)
         except:
             pass
         return
 
-    if value == "√":
+    if value == "√x":
         try:
             num = float(text)
-            label["text"] = remove_zero_decimal(math.sqrt(num))
+            ResultBox["text"] = remove_zero_decimal(math.sqrt(num))
         except:
-            label["text"] = "Error"
+            ResultBox["text"] = "Error"
         return
     
     if value == "1/x":
         try:
             num = float(text)
             if num == "0":
-                label["text"] = "Error"
+                ResultBox["text"] = "Error"
             else:
-                label["text"] = remove_zero_decimal(1 / num)
+                ResultBox["text"] = remove_zero_decimal(1 / num)
         except:
-            label["text"] = "Error"
+            ResultBox["text"] = "Error"
         return
     
-    if value == "²":
+    if value == "x²":
         try:
             num = float(text)
-            label["text"] = remove_zero_decimal(num * num)
+            ResultBox["text"] = remove_zero_decimal(num * num)
         except:
-            label["text"] = "Error"
+            ResultBox["text"] = "Error"
         return
     
     if value == "CE":
-        label["text"] == "0"
+        ResultBox["text"] == "0"
         return
     
-    if value == "<x":
+    if value == "DEL":
         if len(text) > 1:
-            label["text"] = text[:-1]
+            ResultBox["text"] = text[:-1]
         else: 
-            label["text"] = "0"
+            ResultBox["text"] = "0"
         return
 
 
     if text == "0":
-        label["text"] = value
+        ResultBox["text"] = value
     else:
-        label["text"] += value
+        ResultBox["text"] += value
 
 # centering the window on a screen
 
