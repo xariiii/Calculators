@@ -10,6 +10,7 @@ public class Calculator {
 
     static boolean ttsEnabled = false;
     static boolean partyMode = false;
+    static boolean historyVisible = false;
 
     static double lastValue = 0;
     static String lastOperator = "";
@@ -26,19 +27,14 @@ public class Calculator {
     static List<CalcButton> buttons = List.of(
             new CalcButton("%", "%"), new CalcButton("CE", "CE"),
             new CalcButton("C", "C"), new CalcButton("DEL", "DEL"),
-
             new CalcButton("1/x", "1/x"), new CalcButton("x²", "x^2"),
             new CalcButton("√x", "sqrt"), new CalcButton("/", "/"),
-
             new CalcButton("7", "7"), new CalcButton("8", "8"),
             new CalcButton("9", "9"), new CalcButton("*", "*"),
-
             new CalcButton("4", "4"), new CalcButton("5", "5"),
             new CalcButton("6", "6"), new CalcButton("-", "-"),
-
             new CalcButton("1", "1"), new CalcButton("2", "2"),
             new CalcButton("3", "3"), new CalcButton("+", "+"),
-
             new CalcButton("+/-", "+/-"), new CalcButton("0", "0"),
             new CalcButton(".", "."), new CalcButton("=", "=")
     );
@@ -94,20 +90,25 @@ public class Calculator {
         scroll.setVisible(false);
         frame.add(scroll);
 
-        historyBtn.addActionListener(e -> scroll.setVisible(!scroll.isVisible()));
+        historyBtn.addActionListener(e -> {
+            historyVisible = !historyVisible;
+            scroll.setVisible(historyVisible);
+            speakToggle("historia", historyVisible);
+        });
 
         partyBtn.addActionListener(e -> {
             partyMode = !partyMode;
             partyBtn.setBackground(partyMode ? orange : Color.GRAY);
+            speakToggle("tryb imprezowy", partyMode);
             togglePartyMode(frame);
         });
 
         ttsBtn.addActionListener(e -> {
             ttsEnabled = !ttsEnabled;
             ttsBtn.setBackground(ttsEnabled ? purple : Color.GRAY);
+            speakToggle("tryb mówienia", ttsEnabled);
         });
 
-        // GRID
         int size = 75;
         int gap = 8;
 
@@ -171,33 +172,75 @@ public class Calculator {
     static void speak(String text) {
         if (!ttsEnabled) return;
 
-        // mapowanie symboli
-        text = switch (text) {
+        String mapped = switch (text) {
             case "+" -> "plus";
             case "-" -> "minus";
             case "*" -> "razy";
             case "/" -> "podzielone przez";
+            case "%" -> "procent";
             case "." -> "przecinek";
+            case "," -> "przecinek";
+            case "C" -> "czyść";
+            case "CE" -> "czyść ostatnie";
+            case "DEL" -> "usuń";
             default -> text;
         };
 
-        String safe = text.replace("'", "''");
+        if (text.matches("[0-9.,]+")) {
+            mapped = text.replace(",", ".")
+                    .chars()
+                    .mapToObj(c -> c == '.' ? "przecinek" : String.valueOf((char) c))
+                    .reduce("", (a, b) -> a + " " + b)
+                    .trim();
+        }
 
         try {
             new ProcessBuilder(
                     "powershell",
                     "-Command",
                     "Add-Type -AssemblyName System.Speech;" +
-                    "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer;" +
-                    "$s.Rate = 0;" +
-                    "$s.Volume = 100;" +
-                    "$s.Speak('" + safe + "');"
+                            "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer;" +
+                            "$s.Speak('" + mapped.replace("'", "''") + "');"
             ).start();
         } catch (Exception ignored) {}
     }
 
     static void speakResult(String prefix, String result) {
-        speak(prefix + " wynik " + result);
+        if (!ttsEnabled) return;
+
+        String digits = result.replace(",", ".")
+                .chars()
+                .mapToObj(c -> c == '.' ? "przecinek" : String.valueOf((char) c))
+                .reduce("", (a, b) -> a + " " + b)
+                .trim();
+
+        String text = (prefix + " wynik " + digits).trim();
+
+        try {
+            new ProcessBuilder(
+                    "powershell",
+                    "-Command",
+                    "Add-Type -AssemblyName System.Speech;" +
+                            "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer;" +
+                            "$s.Speak('" + text.replace("'", "''") + "');"
+            ).start();
+        } catch (Exception ignored) {}
+    }
+
+    static void speakToggle(String feature, boolean state) {
+        if (!ttsEnabled) return;
+
+        String text = feature + " " + (state ? "włączony" : "wyłączony");
+
+        try {
+            new ProcessBuilder(
+                    "powershell",
+                    "-Command",
+                    "Add-Type -AssemblyName System.Speech;" +
+                            "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer;" +
+                            "$s.Speak('" + text.replace("'", "''") + "');"
+            ).start();
+        } catch (Exception ignored) {}
     }
 
     static void handle(ActionEvent e) {
@@ -226,41 +269,81 @@ public class Calculator {
 
             case "+/-" -> {
                 if (!t.isEmpty()) {
-                    if (t.startsWith("-")) inputField.setText(t.substring(1));
-                    else inputField.setText("-" + t);
+                    boolean wasNegative = t.startsWith("-");
+                    String newValue = wasNegative ? t.substring(1) : "-" + t;
+
+                    String spoken = wasNegative
+                            ? "zmiana znaku, " + newValue
+                            : "zmiana znaku, minus " + t;
+
+                    speak(spoken);
+                    inputField.setText(newValue);
+                }
+            }
+
+
+            case "%" -> {
+                if (!t.isEmpty()) {
+                    try {
+                        double num = Double.parseDouble(t);
+                        double res = num / 100;
+                        String out = clean(res);
+                        inputField.setText(out);
+                        historyArea.append(t + "% = " + out + "\n");
+                        speakResult("procent z " + t + " to", out);
+                        resetOnNext = true;
+                    } catch (Exception ex) {
+                        speak("wystąpił błąd");
+                        inputField.setText("Error");
+                    }
                 }
             }
 
             case "1/x" -> {
                 if (!t.isEmpty()) {
-                    double n = Double.parseDouble(t);
-                    double res = 1 / n;
-                    String out = clean(res);
-                    inputField.setText(out);
-                    speakResult("odwrotność " + t + " to", out);
-                    resetOnNext = true;
+                    try {
+                        double n = Double.parseDouble(t);
+                        double res = 1 / n;
+                        String out = clean(res);
+                        inputField.setText(out);
+                        speakResult("odwrotność " + t + " to", out);
+                        resetOnNext = true;
+                    } catch (Exception ex) {
+                        speak("wystąpił błąd");
+                        inputField.setText("Error");
+                    }
                 }
             }
 
             case "x^2" -> {
                 if (!t.isEmpty()) {
-                    double n = Double.parseDouble(t);
-                    double res = n * n;
-                    String out = clean(res);
-                    inputField.setText(out);
-                    speakResult(t + " do kwadratu to", out);
-                    resetOnNext = true;
+                    try {
+                        double n = Double.parseDouble(t);
+                        double res = n * n;
+                        String out = clean(res);
+                        inputField.setText(out);
+                        speakResult(t + " do kwadratu to", out);
+                        resetOnNext = true;
+                    } catch (Exception ex) {
+                        speak("wystąpił błąd");
+                        inputField.setText("Error");
+                    }
                 }
             }
 
             case "sqrt" -> {
                 if (!t.isEmpty()) {
-                    double n = Double.parseDouble(t);
-                    double res = Math.sqrt(n);
-                    String out = clean(res);
-                    inputField.setText(out);
-                    speakResult("pierwiastek z " + t + " to", out);
-                    resetOnNext = true;
+                    try {
+                        double n = Double.parseDouble(t);
+                        double res = Math.sqrt(n);
+                        String out = clean(res);
+                        inputField.setText(out);
+                        speakResult("pierwiastek z " + t + " to", out);
+                        resetOnNext = true;
+                    } catch (Exception ex) {
+                        speak("wystąpił błąd");
+                        inputField.setText("Error");
+                    }
                 }
             }
 
@@ -276,32 +359,35 @@ public class Calculator {
             case "=" -> {
                 if (!t.isEmpty() && !lastOperator.isEmpty() && t.contains(lastOperator)) {
 
-                    int idx = t.lastIndexOf(lastOperator);
-                    String left = t.substring(0, idx);
-                    String right = t.substring(idx + 1);
+                    try {
+                        int idx = t.lastIndexOf(lastOperator);
+                        String left = t.substring(0, idx);
+                        String right = t.substring(idx + 1);
 
-                    if (right.isEmpty()) return;
+                        double n1 = Double.parseDouble(left);
+                        double n2 = Double.parseDouble(right);
 
-                    double n1 = Double.parseDouble(left);
-                    double n2 = Double.parseDouble(right);
+                        double result = switch (lastOperator) {
+                            case "+" -> n1 + n2;
+                            case "-" -> n1 - n2;
+                            case "*" -> n1 * n2;
+                            case "/" -> n1 / n2;
+                            default -> n2;
+                        };
 
-                    double result = switch (lastOperator) {
-                        case "+" -> n1 + n2;
-                        case "-" -> n1 - n2;
-                        case "*" -> n1 * n2;
-                        case "/" -> n1 / n2;
-                        default -> n2;
-                    };
+                        String out = clean(result);
+                        historyArea.append(left + " " + lastOperator + " " + right + " = " + out + "\n");
 
-                    String out = clean(result);
-                    historyArea.append(left + " " + lastOperator + " " + right + " = " + out + "\n");
+                        inputField.setText(out);
+                        speakResult("", out);
 
-                    inputField.setText(out);
+                        resetOnNext = true;
+                        lastValue = result;
 
-                    speakResult("", out);
-
-                    resetOnNext = true;
-                    lastValue = result;
+                    } catch (Exception ex) {
+                        speak("wystąpił błąd");
+                        inputField.setText("Error");
+                    }
                 }
             }
 

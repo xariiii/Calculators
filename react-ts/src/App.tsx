@@ -51,8 +51,8 @@ function App() {
   const clean = (num: number) => parseFloat(num.toFixed(6))
   const format = (num: number) => num.toLocaleString("pl-PL")
 
-  // 🔊 FIXED REAL-TIME TTS
-  const speak = (input: string, mode: "input" | "result" = "input") => {
+  // 🔊 CZYTANIE CYFR PO KOLEI (jak w Javie)
+  const speak = (text: string) => {
     if (!tts) return
 
     const map: Record<string, string> = {
@@ -61,57 +61,149 @@ function App() {
       "*": "razy",
       "/": "podzielone przez",
       ".": "przecinek",
-      "=": "równa się"
+      ",": "przecinek",
+      "%": "procent",
+      "C": "czyść",
+      "CE": "czyść ostatnie",
+      "DEL": "usuń"
     }
 
-    let text = map[input] ?? input
+    // liczby → czytaj cyframi
+    if (/^[0-9.,]+$/.test(text)) {
+      const spoken = text
+        .replace(",", ".")
+        .split("")
+        .map(ch => map[ch] ?? ch)
+        .join(" ")
 
-    // ❗ result mode = tylko wynik, bez powtórek
-    if (mode === "result") {
-      text = "wynik " + input
+      speechSynthesis.cancel()
+      speechSynthesis.speak(new SpeechSynthesisUtterance(spoken))
+      return
     }
 
+    const spoken = map[text] ?? text
+    speechSynthesis.cancel()
+    speechSynthesis.speak(new SpeechSynthesisUtterance(spoken))
+  }
+
+  const speakResult = (prefix: string, result: string) => {
+    if (!tts) return
+
+    const digits = result
+      .replace(",", ".")
+      .split("")
+      .map(ch => (ch === "." ? "przecinek" : ch))
+      .join(" ")
+
+    const text = `${prefix} wynik ${digits}`
+
+    speechSynthesis.cancel()
+    speechSynthesis.speak(new SpeechSynthesisUtterance(text))
+  }
+
+  const speakToggle = (feature: string, state: boolean) => {
+    if (!tts) return
+    const text = `${feature} ${state ? "włączony" : "wyłączony"}`
     speechSynthesis.cancel()
     speechSynthesis.speak(new SpeechSynthesisUtterance(text))
   }
 
   const handleClick = (value: string) => {
 
-    // C / DEL / CE NIE MÓWIĄ NIC (ważne UX fix)
+    // C / CE / DEL mówią teraz poprawnie
     if (value === "C") {
+      speak("C")
       setEquation("")
       return
     }
 
     if (value === "CE") {
+      speak("CE")
       setEquation(prev => prev.replace(/([0-9.]+|\D+)$/, ""))
       return
     }
 
     if (value === "DEL") {
+      speak("DEL")
       setEquation(prev => prev.slice(0, -1))
       return
     }
 
     if (value === "+/-") {
-      setEquation(prev => {
-        if (!prev) return prev
-        return prev.startsWith("-") ? prev.slice(1) : "-" + prev
-      })
+      if (!equation) return
+
+      const wasNegative = equation.startsWith("-")
+      const newValue = wasNegative ? equation.slice(1) : "-" + equation
+
+      const spoken = wasNegative
+        ? `zmiana znaku, ${newValue}`
+        : `zmiana znaku, minus ${equation}`
+
+      speak(spoken)
+      setEquation(newValue)
       return
     }
 
-    // 🔢 REAL-TIME INPUT
+
+    // % — działa jak w Windows Calculator
+    if (value === "%") {
+      if (!equation) return
+      try {
+        const num = evaluate(equation)
+        const result = clean(num / 100)
+        speakResult("procent z", String(result))
+        setEquation(format(result))
+        addToHistory(`${equation}% = ${result}`)
+      } catch {
+        speak("wystąpił błąd")
+        setEquation("Error")
+      }
+      return
+    }
+
+    // sqrt / x^2 / 1/x
+    if (value === "sqrt" || value === "x^2" || value === "1/x") {
+      if (!equation) return
+
+      try {
+        const num = evaluate(equation)
+        let result = 0
+
+        if (value === "sqrt") {
+          result = Math.sqrt(num)
+          speakResult(`pierwiastek z ${num} to`, String(clean(result)))
+        }
+
+        if (value === "x^2") {
+          result = num * num
+          speakResult(`${num} do kwadratu to`, String(clean(result)))
+        }
+
+        if (value === "1/x") {
+          result = 1 / num
+          speakResult(`odwrotność ${num} to`, String(clean(result)))
+        }
+
+        result = clean(result)
+        setEquation(format(result))
+        addToHistory(`${equation} → ${result}`)
+
+      } catch {
+        speak("wystąpił błąd")
+        setEquation("Error")
+      }
+
+      return
+    }
+
+    // normalne kliknięcia
     if (value !== "=") {
-      setEquation(prev => {
-        const next = prev + value
-        speak(value, "input")   // <- LIVE FIX
-        return next
-      })
+      speak(value)
+      setEquation(prev => prev + value)
       return
     }
 
-    // 🟰 RESULT (ONLY ONCE)
+    // wynik
     try {
       let result = evaluate(equation)
       result = clean(result)
@@ -119,9 +211,10 @@ function App() {
       addToHistory(`${equation} = ${result}`)
       setEquation(format(result))
 
-      speak(String(result), "result") // <- FIXED (no duplication)
+      speakResult("", String(result))
 
     } catch {
+      speak("wystąpił błąd")
       setEquation("Error")
     }
   }
@@ -147,14 +240,24 @@ function App() {
 
           <div className="flex gap-2">
             <button
-              onClick={() => setTts(p => !p)}
+              onClick={() => {
+                setTts(p => {
+                  speakToggle("tryb mówienia", !p)
+                  return !p
+                })
+              }}
               className={`px-3 py-1 rounded-xl text-sm text-white ${tts ? "bg-[#525298]" : "bg-gray-400"}`}
             >
               🔊
             </button>
 
             <button
-              onClick={() => setParty(p => !p)}
+              onClick={() => {
+                setParty(p => {
+                  speakToggle("tryb imprezowy", !p)
+                  return !p
+                })
+              }}
               className={`px-3 py-1 rounded-xl text-sm text-white ${party ? "bg-[#F5955F]" : "bg-gray-400"}`}
             >
               🎉
@@ -162,7 +265,12 @@ function App() {
           </div>
 
           <button
-            onClick={() => setShowHistory(p => !p)}
+            onClick={() => {
+              setShowHistory(p => {
+                speakToggle("historia", !p)
+                return !p
+              })
+            }}
             className="bg-[#F5955F] text-white px-3 py-1 rounded-xl text-sm"
           >
             H
@@ -170,11 +278,13 @@ function App() {
         </div>
 
         {/* INPUT */}
-        <Input
-          value={equation}
-          readOnly
-          className="text-right text-3xl font-bold text-[#525298] bg-[#F2F2F7] p-4 rounded-xl"
-        />
+        <div className="overflow-x-auto whitespace-nowrap">
+          <Input
+            value={equation}
+            readOnly
+            className="text-right text-3xl font-bold text-[#525298] bg-[#F2F2F7] p-4 rounded-xl"
+          />
+        </div>
 
         {/* HISTORY */}
         {showHistory && (
@@ -188,7 +298,7 @@ function App() {
           {buttons.map((btn, index) => {
             const isNumber = /[0-9.]/.test(btn.value)
             const isOrange = ["CE", "C", "DEL", "="].includes(btn.value)
-            const isPurple = ["1/x", "x^2", "sqrt", "/", "*", "-", "+"].includes(btn.value)
+            const isPurple = ["1/x", "x^2", "sqrt", "/", "*", "-", "+", "%", "+/-"].includes(btn.value)
 
             return (
               <Button
