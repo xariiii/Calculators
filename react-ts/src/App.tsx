@@ -4,6 +4,7 @@ import { evaluate } from "mathjs"
 import { useState } from "react"
 
 function App() {
+
   const buttons = [
     { label: "%", value: "%" },
     { label: "CE", value: "CE" },
@@ -32,7 +33,7 @@ function App() {
 
     { label: "+/-", value: "+/-" },
     { label: "0", value: "0" },
-    { label: ",", value: "." },
+    { label: ".", value: "." },
     { label: "=", value: "=" },
   ]
 
@@ -40,11 +41,43 @@ function App() {
   const [history, setHistory] = useState<string[]>([])
   const [showHistory, setShowHistory] = useState(false)
 
+  const [tts, setTts] = useState(false)
+  const [party, setParty] = useState(false)
+
   const addToHistory = (entry: string) => {
     setHistory(prev => [...prev, entry])
   }
 
+  const clean = (num: number) => parseFloat(num.toFixed(6))
+  const format = (num: number) => num.toLocaleString("pl-PL")
+
+  // 🔊 FIXED REAL-TIME TTS
+  const speak = (input: string, mode: "input" | "result" = "input") => {
+    if (!tts) return
+
+    const map: Record<string, string> = {
+      "+": "plus",
+      "-": "minus",
+      "*": "razy",
+      "/": "podzielone przez",
+      ".": "przecinek",
+      "=": "równa się"
+    }
+
+    let text = map[input] ?? input
+
+    // ❗ result mode = tylko wynik, bez powtórek
+    if (mode === "result") {
+      text = "wynik " + input
+    }
+
+    speechSynthesis.cancel()
+    speechSynthesis.speak(new SpeechSynthesisUtterance(text))
+  }
+
   const handleClick = (value: string) => {
+
+    // C / DEL / CE NIE MÓWIĄ NIC (ważne UX fix)
     if (value === "C") {
       setEquation("")
       return
@@ -63,71 +96,78 @@ function App() {
     if (value === "+/-") {
       setEquation(prev => {
         if (!prev) return prev
-        if (prev.startsWith("-")) return prev.slice(1)
-        return "-" + prev
+        return prev.startsWith("-") ? prev.slice(1) : "-" + prev
       })
       return
     }
 
-    if (value === "=") {
-      try {
-        const result = evaluate(equation)
-        addToHistory(`${equation} = ${result}`)
-        setEquation(String(result))
-      } catch {
-        setEquation("Error")
-      }
+    // 🔢 REAL-TIME INPUT
+    if (value !== "=") {
+      setEquation(prev => {
+        const next = prev + value
+        speak(value, "input")   // <- LIVE FIX
+        return next
+      })
       return
     }
 
-    if (value === "sqrt") {
-      try {
-        const result = evaluate(`sqrt(${equation})`)
-        addToHistory(`√(${equation}) = ${result}`)
-        setEquation(String(result))
-      } catch {
-        setEquation("Error")
-      }
-      return
-    }
+    // 🟰 RESULT (ONLY ONCE)
+    try {
+      let result = evaluate(equation)
+      result = clean(result)
 
-    if (value === "x^2") {
-      try {
-        const result = evaluate(`(${equation})^2`)
-        addToHistory(`(${equation})² = ${result}`)
-        setEquation(String(result))
-      } catch {
-        setEquation("Error")
-      }
-      return
-    }
+      addToHistory(`${equation} = ${result}`)
+      setEquation(format(result))
 
-    if (value === "1/x") {
-      try {
-        const result = evaluate(`1/(${equation})`)
-        addToHistory(`1/(${equation}) = ${result}`)
-        setEquation(String(result))
-      } catch {
-        setEquation("Error")
-      }
-      return
-    }
+      speak(String(result), "result") // <- FIXED (no duplication)
 
-    setEquation(prev => prev + value)
+    } catch {
+      setEquation("Error")
+    }
   }
 
   return (
-    <div className="h-screen w-screen bg-[url('/src/assets/background.jpg')] bg-cover bg-center flex items-center justify-center p-4">
+    <div className={`h-screen w-screen bg-[url('/src/assets/background.jpg')] bg-cover flex items-center justify-center p-4
+      ${party ? "animate-[party_3s_linear_infinite]" : ""}`}>
 
-      <div className="relative w-[350px] max-h-[700px] bg-white rounded-3xl shadow-2xl p-6 flex flex-col gap-6">
+      <style>
+        {`
+        @keyframes party {
+          0% { filter: hue-rotate(0deg) brightness(1); }
+          50% { filter: hue-rotate(180deg) brightness(1.2); }
+          100% { filter: hue-rotate(360deg) brightness(1); }
+        }
+        `}
+      </style>
 
-        {/* HISTORY BUTTON */}
-        <button
-          onClick={() => setShowHistory(!showHistory)}
-          className="absolute top-3 right-3 bg-[#F5955F] text-white font-bold px-3 py-1 rounded-xl"
-        >
-          H
-        </button>
+      <div className="relative w-[350px] bg-white rounded-3xl shadow-2xl p-6 flex flex-col gap-4">
+
+        {/* TOP BAR */}
+        <div className="flex justify-between">
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => setTts(p => !p)}
+              className={`px-3 py-1 rounded-xl text-sm text-white ${tts ? "bg-[#525298]" : "bg-gray-400"}`}
+            >
+              🔊
+            </button>
+
+            <button
+              onClick={() => setParty(p => !p)}
+              className={`px-3 py-1 rounded-xl text-sm text-white ${party ? "bg-[#F5955F]" : "bg-gray-400"}`}
+            >
+              🎉
+            </button>
+          </div>
+
+          <button
+            onClick={() => setShowHistory(p => !p)}
+            className="bg-[#F5955F] text-white px-3 py-1 rounded-xl text-sm"
+          >
+            H
+          </button>
+        </div>
 
         {/* INPUT */}
         <Input
@@ -136,20 +176,17 @@ function App() {
           className="text-right text-3xl font-bold text-[#525298] bg-[#F2F2F7] p-4 rounded-xl"
         />
 
-        {/* HISTORY PANEL */}
+        {/* HISTORY */}
         {showHistory && (
-          <div className="bg-[#F2F2F7] text-[#525298] rounded-xl p-3 h-40 overflow-y-auto shadow-inner">
-            {history.length === 0 && <p className="opacity-60">Brak historii</p>}
-            {history.map((h, i) => (
-              <p key={i} className="font-semibold">{h}</p>
-            ))}
+          <div className="bg-[#F2F2F7] text-[#525298] rounded-xl p-3 h-40 overflow-y-auto">
+            {history.map((h, i) => <p key={i}>{h}</p>)}
           </div>
         )}
 
         {/* BUTTONS */}
         <div className="grid grid-cols-4 gap-3">
           {buttons.map((btn, index) => {
-            const isNumber = btn.value.match(/[0-9]/) || btn.value === "."
+            const isNumber = /[0-9.]/.test(btn.value)
             const isOrange = ["CE", "C", "DEL", "="].includes(btn.value)
             const isPurple = ["1/x", "x^2", "sqrt", "/", "*", "-", "+"].includes(btn.value)
 
@@ -162,7 +199,7 @@ function App() {
                   ${isNumber && !isOrange ? "bg-[#F2F2F7] text-[#525298]" : ""}
                   ${isOrange ? "bg-[#F5955F] text-white" : ""}
                   ${isPurple ? "bg-[#525298] text-white" : ""}
-                  hover:opacity-80
+                  active:scale-95 transition
                 `}
               >
                 {btn.label}

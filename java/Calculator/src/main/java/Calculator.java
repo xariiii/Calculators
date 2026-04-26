@@ -1,45 +1,52 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.*;
-import java.awt.*;
 
 public class Calculator {
-
-    public static class CalcButton {
-        String label;
-        String value;
-
-        public CalcButton(String label, String value) {
-            this.label = label;
-            this.value = value;
-        }
-    }
 
     static JTextField inputField;
     static JTextArea historyArea;
 
-    static double num1 = 0;
-    static String operator = "";
-    static boolean startNew = true;
+    static boolean ttsEnabled = false;
+    static boolean partyMode = false;
+
+    static double lastValue = 0;
+    static String lastOperator = "";
+    static boolean resetOnNext = false;
+
+    static Timer partyTimer;
+    static float hue = 0f;
+
+    static class CalcButton {
+        String label, value;
+        CalcButton(String l, String v) { label = l; value = v; }
+    }
 
     static List<CalcButton> buttons = List.of(
             new CalcButton("%", "%"), new CalcButton("CE", "CE"),
             new CalcButton("C", "C"), new CalcButton("DEL", "DEL"),
-            new CalcButton("1/x", "1/x"), new CalcButton("x²", "x²"),
-            new CalcButton("√x", "√x"), new CalcButton("/", "/"),
+
+            new CalcButton("1/x", "1/x"), new CalcButton("x²", "x^2"),
+            new CalcButton("√x", "sqrt"), new CalcButton("/", "/"),
+
             new CalcButton("7", "7"), new CalcButton("8", "8"),
-            new CalcButton("9", "9"), new CalcButton("x", "*"),
+            new CalcButton("9", "9"), new CalcButton("*", "*"),
+
             new CalcButton("4", "4"), new CalcButton("5", "5"),
             new CalcButton("6", "6"), new CalcButton("-", "-"),
+
             new CalcButton("1", "1"), new CalcButton("2", "2"),
             new CalcButton("3", "3"), new CalcButton("+", "+"),
+
             new CalcButton("+/-", "+/-"), new CalcButton("0", "0"),
-            new CalcButton(",", "."), new CalcButton("=", "=")
+            new CalcButton(".", "."), new CalcButton("=", "=")
     );
 
     public static void main(String[] args) {
 
         JFrame frame = new JFrame("Calculator");
-        frame.setSize(350, 705);
+        frame.setSize(360, 720);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
 
@@ -47,197 +54,270 @@ public class Calculator {
         Color white = new Color(242, 242, 247);
         Color orange = new Color(245, 149, 95);
 
-        // === INPUT ===
+        frame.getContentPane().setBackground(Color.WHITE);
+
         inputField = new JTextField();
-        inputField.setFont(new Font("Segoe UI", Font.BOLD, 25));
+        inputField.setBounds(10, 50, 330, 70);
+        inputField.setFont(new Font("Segoe UI", Font.BOLD, 32));
         inputField.setHorizontalAlignment(SwingConstants.RIGHT);
-        inputField.setBounds(10, 40, 330, 60);
-        inputField.setBackground(Color.WHITE);
+        inputField.setBackground(white);
         inputField.setForeground(purple);
+        inputField.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
         inputField.setEditable(false);
-
-        JButton historyButton = new JButton("H");
-        historyButton.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        historyButton.setBounds(290, 5, 50, 30);
-        historyButton.setBackground(orange);
-        historyButton.setForeground(white);
-
         frame.add(inputField);
-        frame.add(historyButton);
 
-        // pokaż okno żeby znać realny rozmiar
-        frame.setVisible(true);
+        JButton ttsBtn = new JButton("🔊");
+        JButton partyBtn = new JButton("🎉");
+        JButton historyBtn = new JButton("H");
 
-        // === REALNY ROZMIAR (KLUCZ!) ===
-        int contentW = frame.getContentPane().getWidth();
-        int contentH = frame.getContentPane().getHeight();
+        ttsBtn.setBounds(10, 10, 60, 30);
+        partyBtn.setBounds(80, 10, 60, 30);
+        historyBtn.setBounds(280, 10, 60, 30);
 
-        int btnSize = 75;
+        ttsBtn.setBackground(Color.GRAY);
+        ttsBtn.setForeground(Color.WHITE);
 
-        // === HORIZONTAL (fix uciania z prawej) ===
-        int gapX = 8;
-        int totalW = 4 * btnSize + 3 * gapX;
-        int startX = (contentW - totalW) / 2;
+        partyBtn.setBackground(Color.GRAY);
+        partyBtn.setForeground(Color.WHITE);
 
-        // === VERTICAL (fix braku miejsca na dole) ===
-        int topOffset = 130;
-        int rows = 6;
+        historyBtn.setBackground(orange);
+        historyBtn.setForeground(Color.WHITE);
 
-        int availableH = contentH - topOffset - 10;
-        int gapY = (availableH - rows * btnSize) / (rows - 1);
+        frame.add(ttsBtn);
+        frame.add(partyBtn);
+        frame.add(historyBtn);
 
-        if (gapY < 2) gapY = 2; // zabezpieczenie
+        historyArea = new JTextArea();
+        historyArea.setEditable(false);
+        JScrollPane scroll = new JScrollPane(historyArea);
+        scroll.setBounds(10, 550, 330, 120);
+        scroll.setVisible(false);
+        frame.add(scroll);
 
-        int x = startX;
-        int y = topOffset;
-        int col = 0;
+        historyBtn.addActionListener(e -> scroll.setVisible(!scroll.isVisible()));
+
+        partyBtn.addActionListener(e -> {
+            partyMode = !partyMode;
+            partyBtn.setBackground(partyMode ? orange : Color.GRAY);
+            togglePartyMode(frame);
+        });
+
+        ttsBtn.addActionListener(e -> {
+            ttsEnabled = !ttsEnabled;
+            ttsBtn.setBackground(ttsEnabled ? purple : Color.GRAY);
+        });
+
+        // GRID
+        int size = 75;
+        int gap = 8;
+
+        int x0 = 10;
+        int y0 = 140;
+
+        int x = x0, y = y0, col = 0;
 
         for (CalcButton b : buttons) {
 
             JButton btn = new JButton(b.label);
+            btn.setBounds(x, y, size, size);
             btn.setFont(new Font("Segoe UI", Font.BOLD, 20));
-            btn.setBounds(x, y, btnSize, btnSize);
             btn.setFocusPainted(false);
+            btn.setOpaque(true);
+
             btn.setActionCommand(b.value);
 
             if (b.value.matches("[0-9]") || b.value.equals(".")) {
                 btn.setBackground(white);
                 btn.setForeground(purple);
-            } else if (b.value.equals("CE") || b.value.equals("C") || b.value.equals("DEL")) {
+            } else if (List.of("C","CE","DEL","=").contains(b.value)) {
                 btn.setBackground(orange);
-                btn.setForeground(white);
-            } else if (b.value.equals("=")) {
-                btn.setBackground(orange);
-                btn.setForeground(white);
+                btn.setForeground(Color.WHITE);
             } else {
                 btn.setBackground(purple);
-                btn.setForeground(white);
+                btn.setForeground(Color.WHITE);
             }
 
-            btn.addActionListener(e -> handleButton(e.getActionCommand()));
+            btn.addActionListener(Calculator::handle);
+
             frame.add(btn);
 
             col++;
-            x += btnSize + gapX;
+            x += size + gap;
 
             if (col == 4) {
                 col = 0;
-                x = startX;
-                y += btnSize + gapY;
+                x = x0;
+                y += size + gap;
             }
         }
 
-        // === HISTORY ===
-        historyArea = new JTextArea();
-        historyArea.setFont(new Font("Segoe UI", Font.BOLD, 16));
-
-        JScrollPane scroll = new JScrollPane(historyArea);
-        scroll.setBounds(10, contentH - 260, contentW - 20, 250);
-        scroll.setVisible(false);
-
-        frame.add(scroll);
-
-        historyButton.addActionListener(e ->
-                scroll.setVisible(!scroll.isVisible())
-        );
-
-        frame.repaint();
+        frame.setVisible(true);
     }
 
-    static void handleButton(String val) {
+    static void togglePartyMode(JFrame frame) {
+        if (partyMode) {
+            partyTimer = new Timer(30, e -> {
+                hue += 0.01f;
+                if (hue > 1) hue = 0;
+                frame.getContentPane().setBackground(Color.getHSBColor(hue, 0.4f, 1f));
+            });
+            partyTimer.start();
+        } else {
+            if (partyTimer != null) partyTimer.stop();
+            frame.getContentPane().setBackground(Color.WHITE);
+        }
+    }
 
-        if (val.matches("[0-9]")) {
-            if (startNew) {
-                inputField.setText(val);
-                startNew = false;
-            } else {
-                inputField.setText(inputField.getText() + val);
+    static void speak(String text) {
+        if (!ttsEnabled) return;
+
+        // mapowanie symboli
+        text = switch (text) {
+            case "+" -> "plus";
+            case "-" -> "minus";
+            case "*" -> "razy";
+            case "/" -> "podzielone przez";
+            case "." -> "przecinek";
+            default -> text;
+        };
+
+        String safe = text.replace("'", "''");
+
+        try {
+            new ProcessBuilder(
+                    "powershell",
+                    "-Command",
+                    "Add-Type -AssemblyName System.Speech;" +
+                    "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer;" +
+                    "$s.Rate = 0;" +
+                    "$s.Volume = 100;" +
+                    "$s.Speak('" + safe + "');"
+            ).start();
+        } catch (Exception ignored) {}
+    }
+
+    static void speakResult(String prefix, String result) {
+        speak(prefix + " wynik " + result);
+    }
+
+    static void handle(ActionEvent e) {
+        String v = e.getActionCommand();
+        String t = inputField.getText();
+
+        if (!List.of("sqrt", "x^2", "1/x", "=").contains(v)) {
+            speak(v);
+        }
+
+        switch (v) {
+
+            case "C" -> {
+                inputField.setText("");
+                lastOperator = "";
+                lastValue = 0;
+                resetOnNext = false;
             }
-            return;
-        }
 
-        if (val.equals(".")) {
-            if (!inputField.getText().contains(".")) {
-                inputField.setText(inputField.getText() + ".");
+            case "CE" -> inputField.setText("");
+
+            case "DEL" -> {
+                if (!t.isEmpty())
+                    inputField.setText(t.substring(0, t.length() - 1));
             }
-            return;
-        }
 
-        if (val.equals("CE")) {
-            inputField.setText("");
-            return;
-        }
-
-        if (val.equals("C")) {
-            inputField.setText("");
-            num1 = 0;
-            operator = "";
-            startNew = true;
-            return;
-        }
-
-        if (val.equals("DEL")) {
-            String t = inputField.getText();
-            if (!t.isEmpty()) {
-                inputField.setText(t.substring(0, t.length() - 1));
+            case "+/-" -> {
+                if (!t.isEmpty()) {
+                    if (t.startsWith("-")) inputField.setText(t.substring(1));
+                    else inputField.setText("-" + t);
+                }
             }
-            return;
-        }
 
-        if (val.equals("+/-")) {
-            if (!inputField.getText().isEmpty()) {
-                double n = Double.parseDouble(inputField.getText());
-                inputField.setText(String.valueOf(-n));
+            case "1/x" -> {
+                if (!t.isEmpty()) {
+                    double n = Double.parseDouble(t);
+                    double res = 1 / n;
+                    String out = clean(res);
+                    inputField.setText(out);
+                    speakResult("odwrotność " + t + " to", out);
+                    resetOnNext = true;
+                }
             }
-            return;
-        }
 
-        if (val.equals("%")) {
-            if (!inputField.getText().isEmpty()) {
-                double n = Double.parseDouble(inputField.getText());
-                inputField.setText(String.valueOf(n / 100));
+            case "x^2" -> {
+                if (!t.isEmpty()) {
+                    double n = Double.parseDouble(t);
+                    double res = n * n;
+                    String out = clean(res);
+                    inputField.setText(out);
+                    speakResult(t + " do kwadratu to", out);
+                    resetOnNext = true;
+                }
             }
-            return;
-        }
 
-        if (val.equals("1/x")) {
-            double n = Double.parseDouble(inputField.getText());
-            inputField.setText(String.valueOf(1 / n));
-            return;
-        }
+            case "sqrt" -> {
+                if (!t.isEmpty()) {
+                    double n = Double.parseDouble(t);
+                    double res = Math.sqrt(n);
+                    String out = clean(res);
+                    inputField.setText(out);
+                    speakResult("pierwiastek z " + t + " to", out);
+                    resetOnNext = true;
+                }
+            }
 
-        if (val.equals("x²")) {
-            double n = Double.parseDouble(inputField.getText());
-            inputField.setText(String.valueOf(n * n));
-            return;
-        }
+            case "+", "-", "*", "/" -> {
+                if (!t.isEmpty()) {
+                    lastValue = Double.parseDouble(t);
+                    lastOperator = v;
+                    inputField.setText(t + v);
+                    resetOnNext = false;
+                }
+            }
 
-        if (val.equals("√x")) {
-            double n = Double.parseDouble(inputField.getText());
-            inputField.setText(String.valueOf(Math.sqrt(n)));
-            return;
-        }
+            case "=" -> {
+                if (!t.isEmpty() && !lastOperator.isEmpty() && t.contains(lastOperator)) {
 
-        if (val.matches("[+\\-*/]")) {
-            num1 = Double.parseDouble(inputField.getText());
-            operator = val;
-            startNew = true;
-            return;
-        }
+                    int idx = t.lastIndexOf(lastOperator);
+                    String left = t.substring(0, idx);
+                    String right = t.substring(idx + 1);
 
-        if (val.equals("=")) {
-            double num2 = Double.parseDouble(inputField.getText());
-            double result = switch (operator) {
-                case "+" -> num1 + num2;
-                case "-" -> num1 - num2;
-                case "*" -> num1 * num2;
-                case "/" -> num1 / num2;
-                default -> num2;
-            };
+                    if (right.isEmpty()) return;
 
-            historyArea.append(num1 + " " + operator + " " + num2 + " = " + result + "\n");
-            inputField.setText(String.valueOf(result));
-            startNew = true;
+                    double n1 = Double.parseDouble(left);
+                    double n2 = Double.parseDouble(right);
+
+                    double result = switch (lastOperator) {
+                        case "+" -> n1 + n2;
+                        case "-" -> n1 - n2;
+                        case "*" -> n1 * n2;
+                        case "/" -> n1 / n2;
+                        default -> n2;
+                    };
+
+                    String out = clean(result);
+                    historyArea.append(left + " " + lastOperator + " " + right + " = " + out + "\n");
+
+                    inputField.setText(out);
+
+                    speakResult("", out);
+
+                    resetOnNext = true;
+                    lastValue = result;
+                }
+            }
+
+            default -> {
+                if (resetOnNext) {
+                    inputField.setText(v);
+                    resetOnNext = false;
+                } else {
+                    inputField.setText(t + v);
+                }
+            }
         }
+    }
+
+    static String clean(double v) {
+        if (v == (long) v) return String.valueOf((long) v);
+        return String.valueOf(v);
     }
 }
