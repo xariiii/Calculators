@@ -1,101 +1,158 @@
-# 🧮 Kalkulator w React + Vite + TypeScript + Tailwind
-Prosty kalkulator napisany w Typescript, umożliwiający wykonywanie podstawowych działań arytmetycznych
+# 🧮 Kalkulator React + TypeScript + Vite + Tailwind
+
+Nowoczesny kalkulator webowy z dodatkowymi funkcjami (TTS, historia działań, tryb imprezowy), napisany w **React + TypeScript + Vite**.
+
+---
+
+## 🚀 Demo funkcji
+
+✔ podstawowe działania matematyczne  
+✔ funkcje zaawansowane (√, x², 1/x, %)  
+✔ historia działań  
+✔ tryb głosowy (Text-to-Speech)  
+✔ tryb „party mode” 🎉  
+✔ obsługa błędów  
+✔ testy jednostkowe (Jest + Testing Library)
+
+---
 
 ## 📦 Wymagania
 
-* Node.js 16+
-* npm
-* React + Vite
-* Biblioteka mathjs
-* Komponenty UI (Button, Input)
-* Plik tła background.jpg
+- Node.js 16+
+- npm
+- React + Vite
+- TypeScript
+- mathjs
+- Tailwind CSS
+- @testing-library/react + jest-dom
 
-Sprawdzenie wersji:
+---
 
-```
-node -v
-```
+## ▶️ Instalacja i uruchomienie
 
-## ▶️ Uruchomienie
-
-### Aby uruchomić kalkulator należy wpisać następujące komendy w terminalu
-- Przejdz do folderu react-ts:
-
-``` 
+### 1. Przejdź do folderu projektu
+```bash
 cd react-ts
 ```
-- Zainstaluj zależności:
-```
+
+### 2. Instalacja zależności
+```bash
 npm install
 ```
-- Uruchom projekt:
-``` 
+
+### 3. Uruchom aplikację
+```bash
 npm run dev
 ```
 
-### Aby uruchomić test należy wpisać następujące komendy w terminalu
+---
 
-- Przejdz do folderu react-ts:
+## 🧪 Testy
 
-``` 
-cd react-ts
-```
-
-- Zainstaluj zależności:
-
-```
-npm install
-```
-
-- Uruchom test:
-
-``` 
+### Uruchom testy jednostkowe:
+```bash
 npm test
 ```
 
-## ✨ Obsługiwane funkcje
+Testy obejmują m.in.:
+- działania matematyczne (+, -, ×, ÷)
+- funkcje specjalne (√, x², 1/x, %)
+- czyszczenie (C, CE, DEL)
+- obsługę błędów
+- formatowanie wejścia
 
-* Dodawanie
-* Odejmowanie
-* Mnożenie
-* Dzielenie
-* Pierwiastek kwadratowy
-* Potęgowanie
-* Odwrócenie liczby
-* Obliczanie procent
-* Zmiana znaku liczby
-* Czyszczenie całego działania
-* Usuwanie ostatniego znaku
-* Czyszczenie ostatniego wpisu
-* Obsługa błędów
+---
 
-## 📄 Opis dzialania programu
+## ✨ Funkcje aplikacji
 
-1. Generowanie przycisków:
-Wszystkie przyciski są zdefiniowane w tablicy buttons, co ułatwia ich renderowanie i zarządzanie.
+### 🔢 Operacje matematyczne
+- dodawanie
+- odejmowanie
+- mnożenie
+- dzielenie
+- procenty
+- pierwiastkowanie
+- potęgowanie
+- odwrotność liczby (1/x)
+- zmiana znaku (+/-)
 
-2. Wyświetlacz:
-Komponent Input pokazuje aktualne działanie lub wynik. Pole jest tylko do odczytu.
+---
 
-3. Obsługa kliknięć (handleClick):
-Funkcja interpretuje kliknięcia i wykonuje odpowiednie akcje:
+### 🧠 Logika działania
+- silnik obliczeń: **mathjs**
+- obsługa całych wyrażeń (np. `2+3*4`)
+- automatyczne formatowanie wyników
+- zabezpieczenie przed błędami (try/catch)
 
-+ modyfikacja równania
-+ wywołanie evaluate() z mathjs
-+ obsługa funkcji specjalnych (sqrt, x², 1/x, +/-)
-+ obsługa błędów
+---
 
-4. Logika obliczeń:
-Wszystkie działania matematyczne są wykonywane przez bibliotekę mathjs, co zapewnia poprawność i bezpieczeństwo obliczeń.
+### 🗂 Historia działań
+- zapisywanie każdego działania
+- możliwość podglądu historii
+- przechowywanie w stanie React (`useState`)
 
-5. Interfejs użytkownika:
-Kalkulator jest zbudowany z siatki 4×N przycisków, stylizowanych za pomocą Tailwind CSS.
-Tło aplikacji jest ustawione poprzez background.jpg.
+---
 
-## 🧪 Przykładowe działania
+### 🔊 Tryb głosowy (TTS)
+- odczytywanie kliknięć
+- czytanie wyników
+- obsługa liczb cyfrowo
+- komunikaty systemowe (C, CE, DEL)
 
-| Wejście | Wynik |
-|---------|---------|
-|   7+8   |    15   |
-|    √9   |    3    |
-|   1/4   |   0.25  |
+---
+
+### 🎉 Tryb imprezowy
+- dynamiczny efekt kolorów (hue-rotate animation)
+- zmiana wyglądu UI
+
+---
+
+## 🧩 Struktura aplikacji
+
+### 1. Przyciski
+Wszystkie przyciski generowane są dynamicznie z tablicy `buttons`.
+
+### 2. Wyświetlacz
+Pole input (readonly) pokazuje aktualne działanie lub wynik.
+
+### 3. Obsługa kliknięć
+Funkcja `handleClick()`:
+- buduje wyrażenie
+- obsługuje funkcje specjalne
+- wykonuje obliczenia (`evaluate`)
+- obsługuje błędy
+
+---
+
+## 🧪 Przykłady działań
+
+| Wyrażenie | Wynik |
+|----------|------|
+| 7 + 8 | 15 |
+| 9 √x | 3 |
+| 5 x² | 25 |
+| 8 / 2 | 4 |
+| 1 / 4 | 0.25 |
+| 2 + 3 × 4 | 14 |
+
+---
+
+## 🛠 Technologie
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- mathjs
+- Web Speech API
+- Jest + Testing Library
+
+---
+
+## 📌 Możliwe rozszerzenia
+
+- tryb naukowy (sin, cos, tan)
+- pamięć kalkulatora (M+, M-, MR)
+- LocalStorage dla historii
+- dark mode
+- obsługa klawiatury
