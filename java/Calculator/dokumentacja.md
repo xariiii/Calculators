@@ -197,6 +197,4 @@ Error
 - tryb naukowy (sin, cos, tan)
 - pamięć kalkulatora (M+, MR, MC)
 - refactor do JavaFX
-```
 
----
