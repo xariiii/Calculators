@@ -200,10 +200,3 @@ Error
 ```
 
 ---
-
-Jeśli chcesz, mogę Ci jeszcze zrobić:
-🔥 :contentReference[oaicite:0]{index=0}
-🔥 :contentReference[oaicite:1]{index=1}
-🔥 albo :contentReference[oaicite:2]{index=2}
-
-Wystarczy, że powiesz 👍
