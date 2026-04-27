@@ -51,7 +51,6 @@ function App() {
   const clean = (num: number) => parseFloat(num.toFixed(6))
   const format = (num: number) => num.toLocaleString("pl-PL")
 
-  // 🔊 CZYTANIE CYFR PO KOLEI (jak w Javie)
   const speak = (text: string) => {
     if (!tts) return
 
@@ -68,7 +67,6 @@ function App() {
       "DEL": "usuń"
     }
 
-    // liczby → czytaj cyframi
     if (/^[0-9.,]+$/.test(text)) {
       const spoken = text
         .replace(",", ".")
@@ -110,7 +108,6 @@ function App() {
 
   const handleClick = (value: string) => {
 
-    // C / CE / DEL mówią teraz poprawnie
     if (value === "C") {
       speak("C")
       setEquation("")
@@ -145,7 +142,6 @@ function App() {
     }
 
 
-    // % — działa jak w Windows Calculator
     if (value === "%") {
       if (!equation) return
       try {
@@ -161,7 +157,6 @@ function App() {
       return
     }
 
-    // sqrt / x^2 / 1/x
     if (value === "sqrt" || value === "x^2" || value === "1/x") {
       if (!equation) return
 
@@ -196,14 +191,12 @@ function App() {
       return
     }
 
-    // normalne kliknięcia
     if (value !== "=") {
       speak(value)
       setEquation(prev => prev + value)
       return
     }
 
-    // wynik
     try {
       let result = evaluate(equation)
       result = clean(result)
