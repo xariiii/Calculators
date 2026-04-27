@@ -44,6 +44,7 @@ python calculator.py
 * Wpisywanie cyfr
 * Obliczanie wyniku
 * Obsługa błędów
+* Historia działań
 
 ## 📄 Opis dzialania programu
 

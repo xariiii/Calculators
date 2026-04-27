@@ -462,7 +462,7 @@
             BtnDesimal.Name = "BtnDesimal";
             BtnDesimal.Size = new Size(75, 75);
             BtnDesimal.TabIndex = 31;
-            BtnDesimal.Text = ".";
+            BtnDesimal.Text = ",";
             BtnDesimal.UseVisualStyleBackColor = true;
             BtnDesimal.Click += BtnNum_Click;
             // 
