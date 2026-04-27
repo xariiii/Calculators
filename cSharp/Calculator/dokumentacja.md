@@ -52,3 +52,11 @@ CE czyści bieżący wpis, C czyści cały kalkulator, Backspace usuwa ostatni z
 |3*3|9|
 |√9|3|
 |20/4|5|
+
+## ✅ Testy
+
+Aby uruchomić testy należy w terminalu wpisać komendę
+
+```
+dotnet test
+```
