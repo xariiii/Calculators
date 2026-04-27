@@ -17,12 +17,14 @@ Prosty kalkulator napisany w C# z użyciem Windows Forms, umożliwiający wykony
 ## ✨ Obsługiwane funkcje
 
 ### Funkcje podstawowe
+
 * Dodawanie
-* Odejmowanie 
+* Odejmowanie
 * Mnożenie
 * Dzielenie
 
 ### Funkcje dodatkowe
+
 * Procenty
 * Częściowe czyszczenie
 * Pełne czyszczenie
@@ -36,6 +38,7 @@ Prosty kalkulator napisany w C# z użyciem Windows Forms, umożliwiający wykony
 * Historia działań
 
 ## 📄 Opis dzialania programu
+
 ```
 Program przyjmuje cyfry i operacje z przycisków interfejsu.
 Po wybraniu działania zapisuje pierwszą liczbę i czeka na drugą.
@@ -48,6 +51,7 @@ CE czyści bieżący wpis, C czyści cały kalkulator, Backspace usuwa ostatni z
 ## 🧪 Przykładowe działania
 
 | Wejście | Wynik |
+
 |---------|---------|
 |3*3|9|
 |√9|3|

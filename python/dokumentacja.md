@@ -1,4 +1,5 @@
 # 🧮 Kalkulator w Pythonie
+
 Prosty kalkulator napisany w Pythonie, umożliwiający wykonywanie podstawowych działań arytmetycznych
 
 ## 📦 Wymagania
@@ -24,12 +25,14 @@ python calculator.py
 ## ✨ Obsługiwane funkcje
 
 ### Funkcje podstawowe
+
 * Dodawanie
-* Odejmowanie 
+* Odejmowanie
 * Mnożenie
 * Dzielenie
 
 ### Funkcje dodatkowe
+
 * Procenty
 * Częściowe czyszczenie
 * Pełne czyszczenie
@@ -43,6 +46,7 @@ python calculator.py
 * Obsługa błędów
 
 ## 📄 Opis dzialania programu
+
 1. Tworzenie okna Tkinter
 2. Centrowanie okna
 3. Generowanie przycisków
@@ -52,6 +56,7 @@ python calculator.py
 ## 🧪 Przykładowe działania
 
 | Wejście | Wynik |
+
 |---------|---------|
 |5*8|40|
 |√4|2|
