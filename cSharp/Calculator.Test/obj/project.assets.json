@@ -1047,23 +1047,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\4d\\.nuget\\packages\\": {},
+    "C:\\Users\\4dTp_1\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\4d\\Documents\\GitHub\\Calculators\\cSharp\\Calculator.Test\\Calculator.Test.csproj",
+      "projectUniqueName": "C:\\Users\\4dTp_1\\Documents\\GitHub\\Calculators\\cSharp\\Calculator.Test\\Calculator.Test.csproj",
       "projectName": "Calculator.Test",
-      "projectPath": "C:\\Users\\4d\\Documents\\GitHub\\Calculators\\cSharp\\Calculator.Test\\Calculator.Test.csproj",
-      "packagesPath": "C:\\Users\\4d\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\4d\\Documents\\GitHub\\Calculators\\cSharp\\Calculator.Test\\obj\\",
+      "projectPath": "C:\\Users\\4dTp_1\\Documents\\GitHub\\Calculators\\cSharp\\Calculator.Test\\Calculator.Test.csproj",
+      "packagesPath": "C:\\Users\\4dTp_1\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\4dTp_1\\Documents\\GitHub\\Calculators\\cSharp\\Calculator.Test\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\4d\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\4dTp_1\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1079,8 +1079,8 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "C:\\Users\\4d\\Documents\\GitHub\\Calculators\\cSharp\\Calculator\\Calculator.csproj": {
-              "projectPath": "C:\\Users\\4d\\Documents\\GitHub\\Calculators\\cSharp\\Calculator\\Calculator.csproj"
+            "C:\\Users\\4dTp_1\\Documents\\GitHub\\Calculators\\cSharp\\Calculator\\Calculator.csproj": {
+              "projectPath": "C:\\Users\\4dTp_1\\Documents\\GitHub\\Calculators\\cSharp\\Calculator\\Calculator.csproj"
             }
           }
         }
@@ -1131,12 +1131,26 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.21, 8.0.21]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.21, 8.0.21]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.21, 8.0.21]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
