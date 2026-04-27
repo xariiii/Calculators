@@ -27,6 +27,7 @@ Aplikacja obsługuje podstawowe i zaawansowane operacje matematyczne, historię 
 - Swing (wbudowany w Java SE)
 
 Sprawdzenie wersji:
+
 ```bash
 java -version
 ```
@@ -36,12 +37,15 @@ java -version
 ## ▶️ Uruchomienie projektu
 
 ### 1. Otwórz projekt
+
 - IntelliJ IDEA → **File → Open → folder projektu**
 
 ### 2. Ustaw SDK
+
 - File → Project Structure → Project SDK → Java 17+
 
 ### 3. Uruchom aplikację
+
 - Otwórz `Calculator.java`
 - Kliknij ▶ przy `main`
 - Run
@@ -53,11 +57,13 @@ java -version
 ### 1. Otwórz projekt w IntelliJ
 
 ### 2. Uruchom testy logiki
+
 - Znajdź: `CalculatorLogicTest.java`
 - Kliknij ▶
 - Run Tests
 
 Testy obejmują:
+
 - dodawanie
 - odejmowanie
 - mnożenie
@@ -75,7 +81,9 @@ Testy obejmują:
 Projekt jest podzielony na 2 główne części:
 
 ### 🖥 Calculator (GUI)
+
 Odpowiada za:
+
 - interfejs Swing
 - obsługę przycisków
 - historię
@@ -83,6 +91,7 @@ Odpowiada za:
 - tryb imprezowy
 
 ### ⚙ CalculatorLogic (logika)
+
 Odpowiada za:
 - operacje matematyczne
 - walidację danych
@@ -125,6 +134,7 @@ Historia jest wyświetlana w panelu `JTextArea`.
   - zmiany trybów
 
 Przykład:
+
 ```
 5 + 3 → "pięć plus trzy"
 wynik → "osiem"
@@ -167,11 +177,13 @@ CalculatorLogicTest    → testy jednostkowe
 ## ⚠️ Obsługa błędów
 
 Aplikacja zabezpiecza się przed:
+
 - dzieleniem przez zero
 - pierwiastkiem z liczby ujemnej
 - niepoprawnym inputem
 
 W przypadku błędu:
+
 ```
 Error
 ```
