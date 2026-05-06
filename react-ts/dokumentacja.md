@@ -31,16 +31,19 @@ Nowoczesny kalkulator webowy z dodatkowymi funkcjami (TTS, historia działań, t
 ## ▶️ Instalacja i uruchomienie
 
 ### 1. Przejdź do folderu projektu
+
 ```bash
 cd react-ts
 ```
 
 ### 2. Instalacja zależności
+
 ```bash
 npm install
 ```
 
 ### 3. Uruchom aplikację
+
 ```bash
 npm run dev
 ```
@@ -50,11 +53,13 @@ npm run dev
 ## 🧪 Testy
 
 ### Uruchom testy jednostkowe:
+
 ```bash
 npm test
 ```
 
 Testy obejmują m.in.:
+
 - działania matematyczne (+, -, ×, ÷)
 - funkcje specjalne (√, x², 1/x, %)
 - czyszczenie (C, CE, DEL)
@@ -66,6 +71,7 @@ Testy obejmują m.in.:
 ## ✨ Funkcje aplikacji
 
 ### 🔢 Operacje matematyczne
+
 - dodawanie
 - odejmowanie
 - mnożenie
@@ -79,6 +85,7 @@ Testy obejmują m.in.:
 ---
 
 ### 🧠 Logika działania
+
 - silnik obliczeń: **mathjs**
 - obsługa całych wyrażeń (np. `2+3*4`)
 - automatyczne formatowanie wyników
@@ -87,6 +94,7 @@ Testy obejmują m.in.:
 ---
 
 ### 🗂 Historia działań
+
 - zapisywanie każdego działania
 - możliwość podglądu historii
 - przechowywanie w stanie React (`useState`)
@@ -94,6 +102,7 @@ Testy obejmują m.in.:
 ---
 
 ### 🔊 Tryb głosowy (TTS)
+
 - odczytywanie kliknięć
 - czytanie wyników
 - obsługa liczb cyfrowo
@@ -102,6 +111,7 @@ Testy obejmują m.in.:
 ---
 
 ### 🎉 Tryb imprezowy
+
 - dynamiczny efekt kolorów (hue-rotate animation)
 - zmiana wyglądu UI
 
@@ -110,13 +120,17 @@ Testy obejmują m.in.:
 ## 🧩 Struktura aplikacji
 
 ### 1. Przyciski
+
 Wszystkie przyciski generowane są dynamicznie z tablicy `buttons`.
 
 ### 2. Wyświetlacz
+
 Pole input (readonly) pokazuje aktualne działanie lub wynik.
 
 ### 3. Obsługa kliknięć
+
 Funkcja `handleClick()`:
+
 - buduje wyrażenie
 - obsługuje funkcje specjalne
 - wykonuje obliczenia (`evaluate`)

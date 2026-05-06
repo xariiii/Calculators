@@ -64,7 +64,7 @@ public class Calculator {
 
         JButton ttsBtn = new JButton("🔊");
         JButton partyBtn = new JButton("🎉");
-        JButton historyBtn = new JButton("H");
+        JButton historyBtn = new JButton("⟲");
 
         ttsBtn.setBounds(10, 10, 60, 30);
         partyBtn.setBounds(80, 10, 60, 30);
